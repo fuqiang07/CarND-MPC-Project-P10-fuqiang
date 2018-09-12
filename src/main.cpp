@@ -11,6 +11,7 @@
 
 // for convenience
 using json = nlohmann::json;
+using namespace Eigen;
 
 // For converting back and forth between radians and degrees.
 constexpr double pi() { return M_PI; }
@@ -85,11 +86,20 @@ int main() {
         string event = j[0].get<string>();
         if (event == "telemetry") {
           // j[1] is the data JSON object
+          //The global x positions of the way points.
           vector<double> ptsx = j[1]["ptsx"];
+          //The global y positions of the way points.
+          // This corresponds to the z coordinate in Unity since y is the up-down direction.
           vector<double> ptsy = j[1]["ptsy"];
+
+          //The global x position of the vehicle.
           double px = j[1]["x"];
+          //The global y position of the vehicle.
           double py = j[1]["y"];
+          //The orientation of the vehicle in radians converted from the Unity format to
+          // the standard format expected in most mathemetical functions
           double psi = j[1]["psi"];
+          //The current velocity in mph.
           double v = j[1]["speed"];
 
           /*
@@ -98,13 +108,53 @@ int main() {
           * Both are in between [-1, 1].
           *
           */
-          double steer_value;
-          double throttle_value;
+
+          //store way points based on the car coordinate system
+          VectorXd ptsx_car(ptsx.size());
+          VectorXd ptsy_car(ptsy.size());
+
+          //transform way points from the global map coordinate to the vehicle coordinate, including
+          //translation of axes, ref https://en.wikipedia.org/wiki/Translation_of_axes
+          //rotation of axes, ref https://en.wikipedia.org/wiki/Rotation_of_axes
+          for(unsigned int i = 0; i < ptsx.size(); i++){
+              double x = ptsx[i] - px;
+              double y = ptsy[i] - py;
+              ptsx_car[i] = x * cos(psi) + y * sin(psi);
+              ptsy_car[i] = - x * sin(psi) + y * cos(psi);
+          }
+
+          // fit a 3-rd polynomial to the way points based on the vehicle coordinate
+          auto coeffs = polyfit(ptsx_car, ptsy_car, 3);
+
+          // since we have transformed to the vehicle coordinate system, x, y and psi below are all zeros
+          double state_px = 0.0;
+          double state_py = 0.0;
+          double state_psi = 0.0;
+          double state_v = v;
+          // calculate the cross track error
+          // double cte = polyeval(coeffs, x) - y;
+          double state_cte = polyeval(coeffs, state_px) - state_py;
+          // Due to the sign starting at 0, the orientation error is -f'(x).
+          // derivative of coeffs[0] + coeffs[1] * x -> coeffs[1]
+          // double epsi = psi - atan(coeffs[1]);
+          double state_epsi = state_psi - atan(coeffs[1]);
+
+          //store the state values to vector state
+          VectorXd state(6);
+          state << state_px, state_py, state_psi, state_v, state_cte, state_epsi;
+          //Calculate the control signals via MPC
+          auto vars = mpc.Solve(state, coeffs);
+
+          //Get steer and throttle values
+          double steer_value = vars[0];
+          double throttle_value = vars[1];
 
           json msgJson;
           // NOTE: Remember to divide by deg2rad(25) before you send the steering value back.
           // Otherwise the values will be in between [-deg2rad(25), deg2rad(25] instead of [-1, 1].
-          msgJson["steering_angle"] = steer_value;
+          //The current steering angle in radians.
+          msgJson["steering_angle"] = steer_value/(deg2rad(25));
+          //The current throttle value [-1, 1].
           msgJson["throttle"] = throttle_value;
 
           //Display the MPC predicted trajectory 
@@ -113,6 +163,10 @@ int main() {
 
           //.. add (x,y) points to list here, points are in reference to the vehicle's coordinate system
           // the points in the simulator are connected by a Green line
+          for (unsigned int i = 2; i < vars.size(); i += 2) {
+              mpc_x_vals.push_back(vars[i]);
+              mpc_y_vals.push_back(vars[i+1]);
+          }
 
           msgJson["mpc_x"] = mpc_x_vals;
           msgJson["mpc_y"] = mpc_y_vals;
@@ -123,10 +177,13 @@ int main() {
 
           //.. add (x,y) points to list here, points are in reference to the vehicle's coordinate system
           // the points in the simulator are connected by a Yellow line
+          for (double i = 0.0; i < 50.0; i += 3.0){
+              next_x_vals.push_back(i);
+              next_y_vals.push_back(polyeval(coeffs, i));
+          }
 
           msgJson["next_x"] = next_x_vals;
           msgJson["next_y"] = next_y_vals;
-
 
           auto msg = "42[\"steer\"," + msgJson.dump() + "]";
           std::cout << msg << std::endl;
