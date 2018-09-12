@@ -12,6 +12,16 @@
 // for convenience
 using json = nlohmann::json;
 using namespace Eigen;
+using namespace std;
+
+//debug
+//#define USERDEBUG
+
+#ifdef USERDEBUG
+#define Debug(x) cout << x
+#else
+#define Debug(x)
+#endif
 
 // For converting back and forth between radians and degrees.
 constexpr double pi() { return M_PI; }
@@ -78,7 +88,7 @@ int main() {
     // The 4 signifies a websocket message
     // The 2 signifies a websocket event
     string sdata = string(data).substr(0, length);
-    cout << sdata << endl;
+    Debug( sdata << endl);
     if (sdata.size() > 2 && sdata[0] == '4' && sdata[1] == '2') {
       string s = hasData(sdata);
       if (s != "") {
@@ -186,7 +196,7 @@ int main() {
           msgJson["next_y"] = next_y_vals;
 
           auto msg = "42[\"steer\"," + msgJson.dump() + "]";
-          std::cout << msg << std::endl;
+          Debug( msg << endl);
           // Latency
           // The purpose is to mimic real driving conditions where
           // the car does actuate the commands instantly.
