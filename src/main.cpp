@@ -127,13 +127,13 @@ int main() {
           auto coeffs = polyfit(ptsx_car, ptsy_car, 3);
 
           // since we have transformed to the vehicle coordinate system, x, y and psi below are all zeros
-          double state_px = 0.0;
-          double state_py = 0.0;
+          double state_x = 0.0;
+          double state_y = 0.0;
           double state_psi = 0.0;
           double state_v = v;
           // calculate the cross track error
           // double cte = polyeval(coeffs, x) - y;
-          double state_cte = polyeval(coeffs, state_px) - state_py;
+          double state_cte = polyeval(coeffs, state_x) - state_y;
           // Due to the sign starting at 0, the orientation error is -f'(x).
           // derivative of coeffs[0] + coeffs[1] * x -> coeffs[1]
           // double epsi = psi - atan(coeffs[1]);
@@ -141,7 +141,7 @@ int main() {
 
           //store the state values to vector state
           VectorXd state(6);
-          state << state_px, state_py, state_psi, state_v, state_cte, state_epsi;
+          state << state_x, state_y, state_psi, state_v, state_cte, state_epsi;
           //Calculate the control signals via MPC
           auto vars = mpc.Solve(state, coeffs);
 
