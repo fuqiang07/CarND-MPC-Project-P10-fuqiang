@@ -27,13 +27,12 @@ using namespace std;
  *    [Analysis]: the kinematic model is not real dynamic model of vehicles. It cannot model the vehicles very well
  *            at sharp turns. Hence we should not predict a long time. Here, T = 1s is better than T = 2s.
  * 3. [setting] T = N * dt = 1 s, and set dt = 0.051s = 50 ms, then N = T / dt = 20.
- *    [result]: compared with the first setting, it becomes worse at sharp turns (less margin, nearly hit the sidewalk).
- *            Moreover, trajectories predicted by MPC can not fit the desired trajectory at sharp turns.
- *    [Analysis]: the kinematic model is not real dynamic model of vehicles. It cannot model the vehicles very well
- *            at sharp turns. Hence we should not predict a long time. Here, T = 1s is better than T = 2s.
+ *    [result]: the result is very bad. the vehicle is even not stable, like a drunk driver.
+ *    [Analysis]: I cannot figure out the reason. From the lessons, the prediction should be more precise with
+ *            smaller dt. I just doubt that the dt = 50 ms not equal to latency 100ms.
  *
  */
-size_t N = 20;
+size_t N = 10;
 double dt = 0.05;
 
 // This value assumes the model presented in the classroom is used.
