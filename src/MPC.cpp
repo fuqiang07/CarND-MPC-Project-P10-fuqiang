@@ -77,13 +77,13 @@ class FG_eval {
     //1. the cte and orientation error is the most important, hence we set them to 1000
     //2. the steering should not be changed so sharp, hence it is set to 100
     //3. we want limit the steering angle, acceleration and jerk, whose weights are set to 10
-    const double weight_cte = 1000.0;  //weight for cross track error
-    const double weight_epsi = 1000.0;  //weight for orientation error
+    const double weight_cte = 2000.0;  //weight for cross track error
+    const double weight_epsi = 2000.0;  //weight for orientation error
     const double weight_v = 1.0;  //weight for velocity
     const double weight_delta = 10.0;  //weight for steering angle
     const double weight_a = 10.0;  //weight for acceleration
     const double weight_delta_diff = 100.0;  //weight for delta differentiate
-    const double weight_a_diff = 10.0;  //weight for jerk
+    const double weight_a_diff = 100.0;  //weight for jerk
 
     // The part of the cost based on the reference state.
     for (unsigned int t = 0; t < N; t++) {
