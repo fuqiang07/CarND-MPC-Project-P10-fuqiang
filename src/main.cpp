@@ -167,7 +167,7 @@ int main() {
           // This is the length from front to CoG that has a similar radius.
           const double Lf = 2.67;
           //latency time is 100 ms = 0.1 s
-          const double time_latency = 0.1;
+          const double time_latency = 0.05;
           //projected states
           //Note if delta is positive we rotate counter-clockwise, or turn left.
           // In the simulator however, a positive value implies a right turn and
