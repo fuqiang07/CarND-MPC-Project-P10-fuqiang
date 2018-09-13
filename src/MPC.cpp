@@ -26,21 +26,25 @@ using namespace std;
  *            Moreover, trajectories predicted by MPC can not fit the desired trajectory at sharp turns.
  *    [Analysis]: the kinematic model is not real dynamic model of vehicles. It cannot model the vehicles very well
  *            at sharp turns. Hence we should not predict a long time. Here, T = 1s is better than T = 2s.
- * 3. [setting] T = N * dt = 1 s, and set dt = 0.051s = 50 ms, then N = T / dt = 20.
- *    [result]: the result is very bad. the vehicle is even not stable, like a drunk driver. Finally, the vehicle
+ * 3. [Setting] T = N * dt = 1 s, and set dt = 0.051s = 50 ms, then N = T / dt = 20.
+ *    [Result]: the result is very bad. the vehicle is even not stable, like a drunk driver. Finally, the vehicle
  *            run out of the lane at the first sharp turn.
  *    [Analysis]: I cannot figure out the reason. From the lessons, the prediction should be more precise with
  *            smaller dt. I just doubt that the dt = 50 ms not equal to latency 100ms.To verify it, I can try
  *            1) set N = 10, dt = 0.05. If the result is very good, then it is not related to latency time.
  *            2) revise the latency to 50ms
- * 4. [setting] T = N * dt = 0.5 s, and set dt = 0.051s = 50 ms, then N = T / dt = 10.
- *    [result]: the result is a little bit better than the previous one. It can stay within the lane but
+ * 4. [Setting] T = N * dt = 0.5 s, and set dt = 0.05s = 50 ms, then N = T / dt = 10.
+ *    [Result]: the result is a little bit better than the previous one. It can stay within the lane but
  *            the angle changes too fast, still like a drunk driver.
- * 5. [setting] T = N * dt = 1 s, and set dt = 0.051s = 50 ms, then N = T / dt = 20. latency = 50ms
- *    [result]: the result become better. But the vehicle become unstable at sharp turns and finally runs out of lane.
- */
+ * 5. [Setting] T = N * dt = 1 s, and set dt = 0.05s = 50 ms, then N = T / dt = 20. latency = 50ms
+ *    [Result]: the result become better. But the vehicle become unstable at sharp turns and finally runs out of lane.
+ * 6. [Setting] T = N * dt = 0.5 s, and set dt = 0.05s = 50 ms, then N = T / dt = 10. latency = 50ms
+ *    [Result]: the result is very good. similar to the first setting with latency = 100ms.
+ *    [Analysis]: Based on the above few experiments, I conclude that dt should be set the same as latency time.
+ *            This would be helpful to deal with the problem brought by latency.
+ *    */
 size_t N = 10;
-double dt = 0.05;
+double dt = 0.1;
 
 // This value assumes the model presented in the classroom is used.
 //
