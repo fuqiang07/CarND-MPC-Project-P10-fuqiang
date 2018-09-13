@@ -185,7 +185,7 @@ int main() {
           proj_state << proj_x, proj_y, proj_psi, proj_v, proj_cte, proj_epsi;
 
           //Calculate the control signals via MPC
-          auto vars = mpc.Solve(state, coeffs);
+          auto vars = mpc.Solve(proj_state, coeffs);
 
           //Get steer and throttle values
           double steer_value = vars[0];
