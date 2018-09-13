@@ -19,10 +19,11 @@ using namespace std;
 
 // TODO: Set the timestep length and duration
 /*Tuning process:
- * 1. set T = N * dt = 1 s as a constant
- * 2. set time constant dt = 0.1s = 100 ms, then N = T / dt = 10
+ * 1. [set] T = N * dt = 1 s as a constant, and set time constant dt = 0.1s = 100 ms (same as latency),
+ *      then N = T / dt = 10.
+ *    [result]: very good. but to view the effects, I change the settings for practice
  */
-size_t N = 10;
+size_t N = 20;
 double dt = 0.1;
 
 // This value assumes the model presented in the classroom is used.
@@ -75,8 +76,11 @@ class FG_eval {
     //define weights for cost functions
     //tuning these weights
     //1. the cte and orientation error is the most important, hence we set them to 1000
-    //2. the steering should not be changed so sharp, hence it is set to 100
-    //3. we want limit the steering angle, acceleration and jerk, whose weights are set to 10
+    //1.1 the above values are increased to 2000 to avoid abnormal MPC prediction in sharp turn
+    //2. the steering should not be changed so sharp and the jerk should not be large,
+    // considering safety and comfort of passengers, hence they are  set to 100
+    //3. we want limit the steering angle and acceleration, whose weights are set to 10
+    //4. the constant velocity is the least important, hence we just set it to 1
     const double weight_cte = 2000.0;  //weight for cross track error
     const double weight_epsi = 2000.0;  //weight for orientation error
     const double weight_v = 1.0;  //weight for velocity
