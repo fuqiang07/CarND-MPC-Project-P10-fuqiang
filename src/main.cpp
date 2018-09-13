@@ -155,7 +155,7 @@ int main() {
 
           //store the state values to vector state
           VectorXd state(6);
-          //state << state_x, state_y, state_psi, state_v, state_cte, state_epsi;
+          state << state_x, state_y, state_psi, state_v, state_cte, state_epsi;
 
           /* CHALLENGE PART : MPC WITH LATENCY
            * Requirements: The student implements Model Predictive Control that handles a 100 millisecond latency.
@@ -181,7 +181,7 @@ int main() {
           double proj_epsi = state_epsi + state_v / Lf * (-delta) * time_latency;
 
           //store the state values to vector state
-          state << proj_x, proj_y, proj_psi, proj_v, proj_cte, proj_epsi;
+          //state << proj_x, proj_y, proj_psi, proj_v, proj_cte, proj_epsi;
 
           //Calculate the control signals via MPC
           auto vars = mpc.Solve(state, coeffs);
@@ -237,7 +237,7 @@ int main() {
           //
           // NOTE: REMEMBER TO SET THIS TO 100 MILLISECONDS BEFORE
           // SUBMITTING.
-          this_thread::sleep_for(chrono::milliseconds(100));
+          this_thread::sleep_for(chrono::milliseconds(0));
           ws.send(msg.data(), msg.length(), uWS::OpCode::TEXT);
         }
       } else {
