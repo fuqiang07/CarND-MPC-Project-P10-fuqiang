@@ -111,6 +111,10 @@ int main() {
           double psi = j[1]["psi"];
           //The current velocity in mph.
           double v = j[1]["speed"];
+          //The current control input -- delta
+          double delta = j[1]["steering_angle"];
+          //The current control input -- acceleration
+          double a = j[1]["throttle"];
 
           /*
           * TODO: Calculate steering angle and throttle using MPC.
@@ -150,8 +154,35 @@ int main() {
           double state_epsi = state_psi - atan(coeffs[1]);
 
           //store the state values to vector state
-          VectorXd state(6);
-          state << state_x, state_y, state_psi, state_v, state_cte, state_epsi;
+          //VectorXd state(6);
+          //state << state_x, state_y, state_psi, state_v, state_cte, state_epsi;
+
+          /* CHALLENGE PART : MPC WITH LATENCY
+           * Requirements: The student implements Model Predictive Control that handles a 100 millisecond latency.
+              Student provides details on how they deal with latency.
+           * Action: to deal with the latency, I will project the vehicle's current state 100ms into the future
+          // before running the MPC solver method
+          */
+
+          // This is the length from front to CoG that has a similar radius.
+          const double Lf = 2.67;
+          //latency time is 100 ms = 0.1 s
+          const double time_latency = 0.1;
+          //projected states
+          //Note if delta is positive we rotate counter-clockwise, or turn left.
+          // In the simulator however, a positive value implies a right turn and
+          // a negative value implies a left turn. This is why we replace the (delta)
+          // with (-delta) in the following equations
+          double proj_x = state_x + state_v * cos(state_psi) * time_latency;
+          double proj_y = state_y + state_v * sin(state_psi) * time_latency;
+          double proj_psi = state_psi + state_v / Lf * (-delta) * time_latency;
+          double proj_v = state_v + a * time_latency;
+          double proj_cte = state_cte + state_v * sin(state_epsi) * time_latency;
+          double proj_epsi = state_epsi + state_v / Lf * (-delta) * time_latency;
+
+          //store the state values to vector state
+          VectorXd proj_state(6);
+          proj_state << proj_x, proj_y, proj_psi, proj_v, proj_cte, proj_epsi;
 
           //Calculate the control signals via MPC
           auto vars = mpc.Solve(state, coeffs);
