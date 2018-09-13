@@ -37,9 +37,9 @@ using namespace std;
  *    [result]: the result is a little bit better than the previous one. It can stay within the lane but
  *            the angle changes too fast, still like a drunk driver.
  * 5. [setting] T = N * dt = 1 s, and set dt = 0.051s = 50 ms, then N = T / dt = 20. latency = 50ms
- *    [result]: the result become better. The vehicle stay within the lane but still shake a lot
+ *    [result]: the result become better. But the vehicle become unstable at sharp turns and finally runs out of lane.
  */
-size_t N = 20;
+size_t N = 10;
 double dt = 0.05;
 
 // This value assumes the model presented in the classroom is used.
