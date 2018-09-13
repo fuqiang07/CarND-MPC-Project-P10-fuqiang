@@ -152,7 +152,7 @@ int main() {
           // Calculate steering and throttle
           // Steering must be divided by deg2rad(25) to normalize within [-1, 1].
           // Multiplying by Lf takes into account vehicle's turning ability
-          double steer_value = vars[0] / (deg2rad(25) * Lf);
+          double steer_value = vars[0] / (deg2rad(25) * 1.0);
           double throttle_value = vars[1];
           
           // Send values to the simulator
