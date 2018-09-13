@@ -74,11 +74,11 @@ class FG_eval {
 
     //define weights for cost functions
     //tuning these weights
-    //1. the cte and orientation error is the most important, hence we set them to 2000
+    //1. the cte and orientation error is the most important, hence we set them to 1000
     //2. the steering should not be changed so sharp, hence it is set to 100
     //3. we want limit the steering angle, acceleration and jerk, whose weights are set to 10
-    const double weight_cte = 2000.0;  //weight for cross track error
-    const double weight_epsi = 2000.0;  //weight for orientation error
+    const double weight_cte = 1000.0;  //weight for cross track error
+    const double weight_epsi = 1000.0;  //weight for orientation error
     const double weight_v = 1.0;  //weight for velocity
     const double weight_delta = 10.0;  //weight for steering angle
     const double weight_a = 10.0;  //weight for acceleration
@@ -96,7 +96,6 @@ class FG_eval {
     for (unsigned int t = 0; t < N - 1; t++) {
       fg[0] += weight_delta * CppAD::pow(vars[delta_start + t], 2);
       fg[0] += weight_a * CppAD::pow(vars[a_start + t], 2);
-      //fg[0] += 700 * CppAD::pow(vars[delta_start + t] * vars[a_start + t], 2);
     }
 
     // Minimize the value gap between sequential actuations.
