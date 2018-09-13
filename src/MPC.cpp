@@ -19,12 +19,22 @@ using namespace std;
 
 // TODO: Set the timestep length and duration
 /*Tuning process:
- * 1. [set] T = N * dt = 1 s as a constant, and set time constant dt = 0.1s = 100 ms (same as latency),
- *      then N = T / dt = 10.
- *    [result]: very good. but to view the effects, I change the settings for practice
+ * 1. [Setting] T = N * dt = 1 s, and set dt = 0.1s = 100 ms (same as latency), then N = T / dt = 10.
+ *    [Result]: very good. but to view the effects, I change the settings for more fun
+ * 2. [Setting] T = N * dt = 2 s, and set dt = 0.1s = 100 ms (same as latency), then N = T / dt = 20.
+ *    [Result]: becomes worse at sharp turns (less margin, nearly hit the sidewalk).
+ *            Moreover, trajectories predicted by MPC can not fit the desired trajectory at sharp turns.
+ *    [Analysis]: the kinematic model is not real dynamic model of vehicles. It cannot model the vehicles very well
+ *            at sharp turns. Hence we should not predict a long time. Here, T = 1s is better than T = 2s.
+ * 3. [setting] T = N * dt = 1 s, and set dt = 0.051s = 50 ms, then N = T / dt = 20.
+ *    [result]: compared with the first setting, it becomes worse at sharp turns (less margin, nearly hit the sidewalk).
+ *            Moreover, trajectories predicted by MPC can not fit the desired trajectory at sharp turns.
+ *    [Analysis]: the kinematic model is not real dynamic model of vehicles. It cannot model the vehicles very well
+ *            at sharp turns. Hence we should not predict a long time. Here, T = 1s is better than T = 2s.
+ *
  */
 size_t N = 20;
-double dt = 0.1;
+double dt = 0.05;
 
 // This value assumes the model presented in the classroom is used.
 //
