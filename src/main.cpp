@@ -154,7 +154,7 @@ int main() {
           double state_epsi = state_psi - atan(coeffs[1]);
 
           //store the state values to vector state
-          //VectorXd state(6);
+          VectorXd state(6);
           //state << state_x, state_y, state_psi, state_v, state_cte, state_epsi;
 
           /* CHALLENGE PART : MPC WITH LATENCY
@@ -181,11 +181,10 @@ int main() {
           double proj_epsi = state_epsi + state_v / Lf * (-delta) * time_latency;
 
           //store the state values to vector state
-          VectorXd proj_state(6);
-          proj_state << proj_x, proj_y, proj_psi, proj_v, proj_cte, proj_epsi;
+          state << proj_x, proj_y, proj_psi, proj_v, proj_cte, proj_epsi;
 
           //Calculate the control signals via MPC
-          auto vars = mpc.Solve(proj_state, coeffs);
+          auto vars = mpc.Solve(state, coeffs);
 
           //Get steer and throttle values
           double steer_value = vars[0];
@@ -195,7 +194,7 @@ int main() {
           // NOTE: Remember to divide by deg2rad(25) before you send the steering value back.
           // Otherwise the values will be in between [-deg2rad(25), deg2rad(25] instead of [-1, 1].
           //The current steering angle in radians.
-          msgJson["steering_angle"] = steer_value/(deg2rad(25));
+          msgJson["steering_angle"] = steer_value/(deg2rad(25) * Lf);
           //The current throttle value [-1, 1].
           msgJson["throttle"] = throttle_value;
 
@@ -219,7 +218,7 @@ int main() {
 
           //.. add (x,y) points to list here, points are in reference to the vehicle's coordinate system
           // the points in the simulator are connected by a Yellow line
-          for (double i = 0.0; i < 50.0; i += 3.0){
+          for (double i = 0.0; i < 50.0; i += 2.0){
               next_x_vals.push_back(i);
               next_y_vals.push_back(polyeval(coeffs, i));
           }
