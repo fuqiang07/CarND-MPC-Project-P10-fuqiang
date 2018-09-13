@@ -96,7 +96,7 @@ class FG_eval {
     for (unsigned int t = 0; t < N - 1; t++) {
       fg[0] += weight_delta * CppAD::pow(vars[delta_start + t], 2);
       fg[0] += weight_a * CppAD::pow(vars[a_start + t], 2);
-      fg[0] += 700 * CppAD::pow(vars[delta_start + t] * vars[a_start + t], 2);
+      //fg[0] += 700 * CppAD::pow(vars[delta_start + t] * vars[a_start + t], 2);
     }
 
     // Minimize the value gap between sequential actuations.
