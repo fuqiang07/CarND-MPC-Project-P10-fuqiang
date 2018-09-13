@@ -36,6 +36,8 @@ using namespace std;
  * 4. [setting] T = N * dt = 0.5 s, and set dt = 0.051s = 50 ms, then N = T / dt = 10.
  *    [result]: the result is a little bit better than the previous one. It can stay within the lane but
  *            the angle changes too fast, still like a drunk driver.
+ * 5. [setting] T = N * dt = 1 s, and set dt = 0.051s = 50 ms, then N = T / dt = 20. latency = 50ms
+ *    [result]: the result become better. The vehicle stay within the lane but still shake a lot
  */
 size_t N = 20;
 double dt = 0.05;
