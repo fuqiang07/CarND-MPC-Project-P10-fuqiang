@@ -194,7 +194,7 @@ int main() {
           // NOTE: Remember to divide by deg2rad(25) before you send the steering value back.
           // Otherwise the values will be in between [-deg2rad(25), deg2rad(25] instead of [-1, 1].
           //The current steering angle in radians.
-          msgJson["steering_angle"] = steer_value/(deg2rad(25) * 1.0f);
+          msgJson["steering_angle"] = steer_value/(deg2rad(25) * Lf);
           //The current throttle value [-1, 1].
           msgJson["throttle"] = throttle_value;
 
