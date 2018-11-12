@@ -167,7 +167,7 @@ int main() {
           // This is the length from front to CoG that has a similar radius.
           const double Lf = 2.67;
           //latency time is 100 ms = 0.1 s
-          const double time_latency = 0.1;
+          const double time_latency = 0.0;
           //projected states
           //Note if delta is positive we rotate counter-clockwise, or turn left.
           // In the simulator however, a positive value implies a right turn and
@@ -194,7 +194,7 @@ int main() {
           // NOTE: Remember to divide by deg2rad(25) before you send the steering value back.
           // Otherwise the values will be in between [-deg2rad(25), deg2rad(25] instead of [-1, 1].
           //The current steering angle in radians.
-          msgJson["steering_angle"] = steer_value/(deg2rad(25) * Lf);
+          msgJson["steering_angle"] = steer_value/(deg2rad(25) * 1.0f);
           //The current throttle value [-1, 1].
           msgJson["throttle"] = throttle_value;
 
@@ -237,7 +237,7 @@ int main() {
           //
           // NOTE: REMEMBER TO SET THIS TO 100 MILLISECONDS BEFORE
           // SUBMITTING.
-          this_thread::sleep_for(chrono::milliseconds(100));
+          this_thread::sleep_for(chrono::milliseconds(0));
           ws.send(msg.data(), msg.length(), uWS::OpCode::TEXT);
         }
       } else {
